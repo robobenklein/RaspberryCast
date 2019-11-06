@@ -1,9 +1,10 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import logging
 import os
 import sys
 import json
+import shutil
 try:
     # this works in Python3
     from urllib.request import urlretrieve
@@ -45,7 +46,10 @@ try:
     os.mkfifo("/tmp/cmd")
 except OSError as e:
     # 17 means the file already exists.
-    if e.errno != 17:
+    if e.errno == 17:
+        shutil.rmtree("/tmp/cmd")
+        os.mkfifo("/tmp/cmd")
+    else:
         raise
 
 if config["new_log"]:
