@@ -47,7 +47,7 @@ try:
 except OSError as e:
     # 17 means the file already exists.
     if e.errno == 17:
-        shutil.rmtree("/tmp/cmd")
+        os.remove("/tmp/cmd")
         os.mkfifo("/tmp/cmd")
     else:
         raise
