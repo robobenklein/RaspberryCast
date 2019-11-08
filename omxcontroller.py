@@ -74,6 +74,7 @@ class PlaybackController(object):
     def stop(self):
         if self.player is not None:
             self.player.stop()
+            self.player = None
 
     def playpause(self):
         if self.player is None:
@@ -111,6 +112,4 @@ class PlaybackController(object):
         return self.player.playback_status()
 
     def shutdown(self):
-        if self.player is not None:
-            self.player.quit()
-            self.player = None
+        self.stop()
