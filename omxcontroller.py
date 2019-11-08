@@ -71,7 +71,7 @@ class PlaybackController(object):
         else:
             log.error("Nothing to play!")
 
-    def stop():
+    def stop(self):
         if self.player is not None:
             self.player.stop()
 
