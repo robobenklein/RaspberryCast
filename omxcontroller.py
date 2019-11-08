@@ -71,6 +71,10 @@ class PlaybackController(object):
         else:
             log.error("Nothing to play!")
 
+    def stop():
+        if self.player is not None:
+            self.player.stop()
+
     def playpause(self):
         if self.player is None:
             log.error("No player running.")
