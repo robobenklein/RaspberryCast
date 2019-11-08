@@ -49,8 +49,8 @@ adding to queue.')
                 f.write(out+'\n')
 
 
-def return_full_url(url, sub=False, slow_mode=False):
-    logger.debug("Parsing source url for "+url+" with subs :"+str(sub))
+def return_full_url(url):
+    logger.debug("Parsing source url for " + url)
 
     if ((url[-4:] in (".avi", ".mkv", ".mp4", ".mp3")) or
             (sub) or (".googlevideo.com/" in url)):
@@ -63,7 +63,7 @@ def return_full_url(url, sub=False, slow_mode=False):
             'noplaylist': True,
             'ignoreerrors': True,
         })  # Ignore errors in case of error in long playlists
-    with ydl:  # Downloading youtub-dl infos. We just want to extract the info
+    with ydl:  # Downloading youtube-dl infos. We just want to extract the info
         result = ydl.extract_info(url, download=False)
 
     if result is None:

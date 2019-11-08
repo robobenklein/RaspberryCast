@@ -5,16 +5,12 @@ import os
 import sys
 import json
 import shutil
-try:
-    # this works in Python3
-    from urllib.request import urlretrieve
-except ImportError:
-    # this works in Python2
-    from urllib import urlretrieve
+from urllib.request import urlretrieve
 from bottle import Bottle, SimpleTemplate, request, response, \
                    template, run, static_file
-from process import launchvideo, queuevideo, playlist, \
-                    setState, getState, setVolume
+# from process import launchvideo, queuevideo, playlist, \
+#                     setState, getState, setVolume
+from omxcontroller import PlaybackController
 
 if len(sys.argv) > 1:
     config_file = sys.argv[1]
@@ -25,12 +21,12 @@ with open(config_file) as f:
 
 # Setting log
 logging.basicConfig(
-    filename='RaspberryCast.log',
+    filename='Rubus.log',
     format="%(asctime)s - %(levelname)s - %(message)s",
     datefmt='%m-%d %H:%M:%S',
     level=logging.DEBUG
 )
-logger = logging.getLogger("RaspberryCast")
+logger = logging.getLogger("RubusCast")
 
 # Creating handler to print messages on stdout
 root = logging.getLogger()
@@ -42,24 +38,17 @@ formatter = logging.Formatter('%(name)s - %(levelname)s - %(message)s')
 ch.setFormatter(formatter)
 root.addHandler(ch)
 
-try:
-    os.mkfifo("/tmp/cmd")
-except OSError as e:
-    # 17 means the file already exists.
-    if e.errno == 17:
-        os.remove("/tmp/cmd")
-        os.mkfifo("/tmp/cmd")
-    else:
-        raise
-
 if config["new_log"]:
-    os.system("sudo fbi -T 1 --noverbose -a  images/ready.jpg")
+    try:
+        os.system("sudo fbi -T 1 --noverbose -a  images/ready.jpg")
+    except Exception as e:
+        log.error(e)
 
-setState("0")
-open('video.queue', 'w').close()  # Reset queue
-logger.info('Server successfully started!')
+# setState("0")
+# logger.info('Server successfully started!')
 
 app = Bottle()
+controller = PlaybackController()
 
 SimpleTemplate.defaults["get_url"] = app.get_url
 
@@ -84,48 +73,18 @@ def remote():
 @app.route('/stream')
 def stream():
     url = request.query['url']
-    logger.debug('Received URL to cast: '+url)
-
-    if 'slow' in request.query:
-        if request.query['slow'] in ["True", "true"]:
-            config["slow_mode"] = True
-        else:
-            config["slow_mode"] = False
-        # TODO: Do we really want to write this to disk?
-        with open(config_file, 'w') as f:
-            json.dump(config, f)
+    logger.debug('Received URL to cast: '+ url)
 
     try:
-        if ('localhost' in url) or ('127.0.0.1' in url):
-            ip = request.environ['REMOTE_ADDR']
-            logger.debug('''URL contains localhost adress. \
-Replacing with remote ip : ''' + ip)
-            url = url.replace('localhost', ip).replace('127.0.0.1', ip)
-
-        if 'subtitles' in request.query:
-            subtitles = request.query['subtitles']
-
-            if ('localhost' in subtitles) or ('127.0.0.1' in subtitles):
-                            ip = request.environ['REMOTE_ADDR']
-                            logger.debug(
-                                '''Subtitle path contains localhost adress.
-Replacing with remote IP.''')
-                            subtitles = subtitles\
-                                .replace('localhost', ip)\
-                                .replace('127.0.0.1', ip)
-
-            logger.debug('Subtitles link is '+subtitles)
-            urlretrieve(subtitles, "subtitle.srt")
-            launchvideo(url, config, sub=True)
+        if (
+                ("youtu" in url and "list=" in url) or
+                ("soundcloud" in url and "/sets/" in url)):
+            playlist(url, True, config)
         else:
-            logger.debug('No subtitles for this stream')
-            if (
-                    ("youtu" in url and "list=" in url) or
-                    ("soundcloud" in url and "/sets/" in url)):
-                playlist(url, True, config)
-            else:
-                launchvideo(url, config, sub=False)
-            return "1"
+            controller.add_single_url(url)
+        if controller.get_status() == "Stopped":
+            controller.play()
+        return "1"
     except Exception as e:
         logger.error(
             'Error in launchvideo function or during downlading the subtitles')
@@ -137,14 +96,7 @@ Replacing with remote IP.''')
 def queue():
     url = request.query['url']
 
-    if 'slow' in request.query:
-        if request.query['slow'] in ["True", "true"]:
-            config["slow_mode"] = True
-        else:
-            config["slow_mode"] = False
-        with open('raspberrycast.conf', 'w') as f:
-            json.dump(config, f)
-
+    # TODO
     try:
         if getState() != "0":
             logger.info('Adding URL to queue: '+url)
@@ -175,40 +127,52 @@ def video():
     control = request.query['control']
     if control == "pause":
         logger.info('Command : pause')
-        os.system("echo -n p > /tmp/cmd &")
+        # os.system("echo -n p > /tmp/cmd &")
+        controller.playpause()
         return "1"
-    elif control in ["stop", "next"]:
+    elif control == "stop":
         logger.info('Command : stop video')
-        os.system("echo -n q > /tmp/cmd &")
+        # os.system("echo -n q > /tmp/cmd &")
+        controller.stop()
+        return "1"
+    elif control == "next":
+        logger.info("Command : next video")
+        controller.next_video()
         return "1"
     elif control == "right":
         logger.info('Command : forward')
-        os.system("echo -n $'\x1b\x5b\x43' > /tmp/cmd &")
+        # os.system("echo -n $'\x1b\x5b\x43' > /tmp/cmd &")
+        controller.seek(30)
         return "1"
     elif control == "left":
         logger.info('Command : backward')
-        os.system("echo -n $'\x1b\x5b\x44' > /tmp/cmd &")
+        # os.system("echo -n $'\x1b\x5b\x44' > /tmp/cmd &")
+        controller.seek(-30)
         return "1"
     elif control == "longright":
         logger.info('Command : long forward')
-        os.system("echo -n $'\x1b\x5b\x41' > /tmp/cmd &")
+        # os.system("echo -n $'\x1b\x5b\x41' > /tmp/cmd &")
+        controller.seek(600)
         return "1"
     elif control == "longleft":
         logger.info('Command : long backward')
-        os.system("echo -n $'\x1b\x5b\x42' > /tmp/cmd &")
+        # os.system("echo -n $'\x1b\x5b\x42' > /tmp/cmd &")
+        controller.seek(-600)
         return "1"
 
 
 @app.route('/sound')
 def sound():
-    vol = request.query['vol']
+    # vol = request.query['vol']
     if vol == "more":
         logger.info('REMOTE: Command : Sound ++')
-        os.system("echo -n + > /tmp/cmd &")
+        # os.system("echo -n + > /tmp/cmd &")
+        controller.change_volume(1)
     elif vol == "less":
         logger.info('REMOTE: Command : Sound --')
-        os.system("echo -n - > /tmp/cmd &")
-    setVolume(vol)
+        # os.system("echo -n - > /tmp/cmd &")
+        controller.change_volume(-1)
+    # setVolume(vol)
     return "1"
 
 
