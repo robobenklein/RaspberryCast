@@ -104,7 +104,7 @@ class PlaybackController(object):
     def get_status(self):
         if self.player is None:
             return "Stopped"
-        return self._player.playback_status()
+        return self.player.playback_status()
 
     def shutdown(self):
         if self.player is not None:
