@@ -5,7 +5,7 @@ import threading
 import logging
 import json
 
-from omxplayer.player import OMXPlayer
+from omxplayer.player import OMXPlayer, OMXPlayerDeadError
 
 from process import return_full_url
 
@@ -95,7 +95,11 @@ class PlaybackController(object):
     def get_status(self):
         if self.player is None:
             return "Stopped"
-        return self.player.playback_status()
+        try:
+            return self.player.playback_status()
+        except OMXPlayerDeadError:
+            self.player = None
+            return "Stopped"
 
     def shutdown(self):
         self.stop()
