@@ -53,7 +53,7 @@ def return_full_url(url):
     logger.debug("Parsing source url for " + url)
 
     if ((url[-4:] in (".avi", ".mkv", ".mp4", ".mp3")) or
-            (sub) or (".googlevideo.com/" in url)):
+            (".googlevideo.com/" in url)):
         logger.debug('Direct video URL, no need to use youtube-dl.')
         return url
 
@@ -77,23 +77,16 @@ def return_full_url(url):
         video = result  # Just a video
 
     if "youtu" in url:
-        if slow_mode:
-            for i in video['formats']:
-                if i['format_id'] == "18":
-                    logger.debug(
-                        "Youtube link detected, extracting url in 360p")
-                    return i['url']
-        else:
-            logger.debug('''CASTING: Youtube link detected.
+        logger.debug('''CASTING: Youtube link detected.
 Extracting url in maximal quality.''')
-            for fid in ('22', '18', '36', '17'):
-                for i in video['formats']:
-                    if i['format_id'] == fid:
-                        logger.debug(
-                            'CASTING: Playing highest video quality ' +
-                            i['format_note'] + '(' + fid + ').'
-                        )
-                        return i['url']
+        for fid in ('22', '18', '36', '17'):
+            for i in video['formats']:
+                if i['format_id'] == fid:
+                    logger.debug(
+                        'CASTING: Playing highest video quality ' +
+                        i['format_note'] + '(' + fid + ').'
+                    )
+                    return i['url']
     elif "vimeo" in url:
         if slow_mode:
             for i in video['formats']:

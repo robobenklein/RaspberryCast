@@ -98,23 +98,24 @@ def queue():
 
     # TODO
     try:
-        if getState() != "0":
+        if controller.get_status() != "Stopped":
             logger.info('Adding URL to queue: '+url)
             if (
                     ("youtu" in url and "list=" in url) or
                     ("soundcloud" in url and "/sets/" in url)):
-                playlist(url, False, config)
+                controller.playlist(url)
             else:
-                queuevideo(url, config)
+                controller.add_single_url(url)
             return "2"
         else:
             logger.info('No video currently playing, playing url : '+url)
             if (
                     ("youtu" in url and "list=" in url) or
                     ("soundcloud" in url and "/sets/" in url)):
-                playlist(url, True, config)
+                controller.playlist(url)
             else:
-                launchvideo(url, config, sub=False)
+                controller.add_single_url(url)
+                controller.play()
             return "1"
     except Exception as e:
         logger.error('Error in launchvideo or queuevideo function !')

@@ -17,49 +17,33 @@ class PlaybackController(object):
         self.queue = []
         self.volume = 9.0
 
-    def _new_player(self, src):
+    def _new_player(self):
+        """Creates a new player by popping from queue."""
         if self.player is not None:
             self.player.quit()
-        self.player = OMXPlayer(src)
+        self.player = OMXPlayer(self.queue.pop(0))
 
     def add_single_url(self, url):
-        # Ignore errors in case of error in long playlists
+        n_item = return_full_url(url)
+        if n_item is not None:
+            self.queue.append(n_item)
+            return True
+
+        raise ValueError("Could not get URL")
+
+    def playlist(self, url):
+        log.info("Adding every videos from playlist to queue.")
         ydl = youtube_dl.YoutubeDL({
             'logger': log,
-            'noplaylist': True,
+            'extract_flat': 'in_playlist',
             'ignoreerrors': True,
         })
-        # Downloading youtube-dl infos. We just want to extract the info
-        with ydl:
+        with ydl:  # Downloading youtub-dl infos
             result = ydl.extract_info(url, download=False)
-
-        if result is None:
-            log.error("Failed to get source file from url: " + str(url))
-            return False
-
-        if 'entries' in result:  # Can be a playlist or a list of videos
-            video = result['entries'][0]
-        else:
-            video = result  # Just a video
-
-        if "youtu" in url:
-            log.debug("YouTube video.")
-            for fid in ('22', '18', '36', '17'):
-                for i in video['formats']:
-                    if i['format_id'] == fid:
-                        log.debug(
-                            'CASTING: Playing highest video quality ' +
-                            i['format_note'] + '(' + fid + ').'
-                        )
-                        self.queue.append(i['url'])
-        elif "vimeo" in url:
-            log.debug("Vimeo video.")
-            self.queue.append(video['url'])
-        else:
-            log.debug('''Video not from Youtube or Vimeo.''')
-            self.queue.append(video['url'])
-
-        return True
+            for i in result['entries']:
+                logger.info("queuing video")
+                if i != result['entries'][0]:
+                    self.add_single_url(i['url'])
 
 
     def play(self):
@@ -67,7 +51,7 @@ class PlaybackController(object):
             log.debug("Playback already playing.")
             return
         if self.player is None and len(self.queue) > 0:
-            self._new_player(self.queue[0])
+            self._new_player()
         else:
             log.error("Nothing to play!")
 
