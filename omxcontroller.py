@@ -19,6 +19,7 @@ class PlaybackController(object):
 
     def _new_player(self):
         """Creates a new player by popping from queue."""
+        log.info("Creating new player.")
         if self.player is not None:
             self.player.quit()
         v = self.queue.pop(0)
@@ -98,6 +99,7 @@ class PlaybackController(object):
         try:
             return self.player.playback_status()
         except OMXPlayerDeadError:
+            log.error("OMXPlayer is dead.")
             self.player = None
             return "Stopped"
 
