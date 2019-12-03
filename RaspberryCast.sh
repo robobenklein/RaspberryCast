@@ -16,7 +16,7 @@ if [ $1 = "start" ]; then
 	echo "Checking for updates."
 	git pull
 	echo "Starting RaspberryCast server."
-	./server.py &
+	./server.py > /tmp/rubus-$(date +%s).log &
 	echo "Done."
 	exit
 elif [ $1 = "stop" ] ; then
