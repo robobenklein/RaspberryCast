@@ -15,7 +15,7 @@ class PlaybackController(object):
     def __init__(self):
         self.player = None
         self.queue = []
-        self.volume = 9.0
+        self.volume = 1.0
 
     def _new_player(self):
         """Creates a new player by popping from queue."""
@@ -25,6 +25,7 @@ class PlaybackController(object):
         v = self.queue.pop(0)
         log.info("Creating player for video: {}".format(v))
         self.player = OMXPlayer(v)
+        self.player.set_volume(self.volume)
 
     def add_single_url(self, url):
         n_item = return_full_url(url)
