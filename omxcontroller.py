@@ -88,10 +88,16 @@ class PlaybackController(object):
         self.volume += increment
         if self.volume < 0.0:
             self.volume = 0.0
-        elif self.volume > 10.0:
-            self.volume = 10.0
+        elif self.volume > 1.0:
+            self.volume = 1.0
         if self.player is not None:
             self.player.set_volume(self.volume)
+
+    def get_volume(self):
+        if self.player is not None:
+            return self.player.volume()
+        else:
+            return 0.0
 
     def get_status(self):
         if self.player is None:

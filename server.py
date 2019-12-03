@@ -153,12 +153,12 @@ def video():
     elif control == "longright":
         logger.info('Command : long forward')
         # os.system("echo -n $'\x1b\x5b\x41' > /tmp/cmd &")
-        controller.seek(600)
+        controller.seek(300)
         return "1"
     elif control == "longleft":
         logger.info('Command : long backward')
         # os.system("echo -n $'\x1b\x5b\x42' > /tmp/cmd &")
-        controller.seek(-600)
+        controller.seek(-300)
         return "1"
 
 
@@ -168,11 +168,11 @@ def sound():
     if vol == "more":
         logger.info('REMOTE: Command : Sound ++')
         # os.system("echo -n + > /tmp/cmd &")
-        controller.change_volume(1)
+        controller.change_volume(0.1)
     elif vol == "less":
         logger.info('REMOTE: Command : Sound --')
         # os.system("echo -n - > /tmp/cmd &")
-        controller.change_volume(-1)
+        controller.change_volume(-0.1)
     return "1"
 
 
