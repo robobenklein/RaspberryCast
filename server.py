@@ -173,6 +173,7 @@ def sound():
         logger.info('REMOTE: Command : Sound --')
         # os.system("echo -n - > /tmp/cmd &")
         controller.change_volume(-0.1)
+    logger.info("Current volume: " + str(controller.get_volume()))
     return "1"
 
 
