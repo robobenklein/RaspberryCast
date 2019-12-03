@@ -164,7 +164,7 @@ def video():
 
 @app.route('/sound')
 def sound():
-    # vol = request.query['vol']
+    vol = request.query['vol']
     if vol == "more":
         logger.info('REMOTE: Command : Sound ++')
         # os.system("echo -n + > /tmp/cmd &")
@@ -173,7 +173,6 @@ def sound():
         logger.info('REMOTE: Command : Sound --')
         # os.system("echo -n - > /tmp/cmd &")
         controller.change_volume(-1)
-    # setVolume(vol)
     return "1"
 
 
