@@ -23,7 +23,7 @@
 						<br>
 						<div>
 							<button id="castbtn" class="btn btn-lg btn-success fifty" title="Cast now" type="button">Cast<span class="glyphicon glyphicon-send pull-right" aria-hidden="true"></button>
-							<button id="addqueue" title="Add current video to queue" class="btn btn-lg btn-info fifty" type="button">Queue<span class="glyphicon glyphicon-menu-hamburger pull-right" aria-hidden="true" ></button>
+							<button id="addqueue" title="Add current video to queue" class="btn btn-lg btn-info fifty" type="button">Enqueue<span class="glyphicon glyphicon-menu-hamburger pull-right" aria-hidden="true" ></button>
 						</div>
 				</form>
 				<div>
@@ -52,7 +52,7 @@
 					</button>
 				</div>
 				<br>
-				<a id="link-text" onClick="advanced()">More options ▾</a>
+				<a type="button" class="btn btn-info" id="link-text" onClick="advanced()">More ▾</a>
 				<div id="advanced" style="display:none">
 					<form id="shut_form" class="form-inline">
 						<div class="form-group">

@@ -16,10 +16,10 @@ function message(msg, importance) {
 function advanced() {
   $("#advanced").toggle("fast");
 
-  if ($("#link-text").html() === "More options ▾") {
-    $("#link-text").html("More options ▴");
+  if ($("#link-text").html() === "More ▾") {
+    $("#link-text").html("More ▴");
   } else {
-    $("#link-text").html("More options ▾");
+    $("#link-text").html("More ▾");
   }
 }
 
@@ -101,7 +101,7 @@ $(function() {
     $("#clear_search").hide();
   });
 
-  $("#media_url").keyup(function() {
+  $("#media_url").change(function() {
     if ($(this).val()) {
       $("#clear_search").show();
     } else {

@@ -40,7 +40,7 @@ root.addHandler(ch)
 
 if config["new_log"]:
     try:
-        os.system("sudo fbi -T 1 --noverbose -a  images/ready.jpg")
+        os.system("sudo fbi -T 1 --noverbose -a images/ready.jpg")
     except Exception as e:
         log.error(e)
 
@@ -86,8 +86,6 @@ def stream():
             controller.play()
         return "1"
     except Exception as e:
-        logger.error(
-            'Error in launchvideo function or during downlading the subtitles')
         logger.exception(e)
         return "0"
 
@@ -96,7 +94,6 @@ def stream():
 def queue():
     url = request.query['url']
 
-    # TODO
     try:
         if controller.get_status() != "Stopped":
             logger.info('Adding URL to queue: '+url)
@@ -109,16 +106,15 @@ def queue():
             return "2"
         else:
             logger.info('No video currently playing, playing url : '+url)
-            if (
-                    ("youtu" in url and "list=" in url) or
-                    ("soundcloud" in url and "/sets/" in url)):
+            if (("youtu" in url and "list=" in url) or
+                ("soundcloud" in url and "/sets/" in url)):
                 controller.playlist(url)
             else:
                 controller.add_single_url(url)
                 controller.play()
             return "1"
     except Exception as e:
-        logger.error('Error in launchvideo or queuevideo function !')
+        logger.error("Could not enqueue video!")
         logger.exception(e)
         return "0"
 
@@ -161,6 +157,13 @@ def video():
         controller.seek(-300)
         return "1"
 
+@app.route('/info')
+def video():
+    control = request.query['attr']
+    if control == "title":
+        return controller.current_playbackitem.get_title()
+    elif control == "volume":
+        return controller.get_volume()
 
 @app.route('/sound')
 def sound():
