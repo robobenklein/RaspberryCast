@@ -77,7 +77,7 @@ class PlaybackController(object):
         log.info("Creating player for video: {}".format(self.current_playbackitem))
         self.player = OMXPlayer(self.current_playbackitem.get_direct_url())
         self.player.set_volume(self.volume)
-        self.player.exitEvent.subscribe(logger.info)
+        self.player.exitEvent.subscribe(self._on_omxplayer_exit)
 
     def add_single_url(self, url):
         n_item = PlaybackItem(url)
