@@ -29,7 +29,7 @@ def return_direct_media_url(url):
             url
         ))
 
-    logger.debug(result)
+    # logger.debug(result)
 
     if 'entries' in result:  # Can be a playlist or a list of videos
         video = result['entries'][0]
