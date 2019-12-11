@@ -206,4 +206,5 @@ def webstate():
     logger.debug("Running state as been asked : "+currentState)
     return currentState
 
+logger.info("Pre-run main file loaded.")
 run(app, reloader=False, host='0.0.0.0', debug=True, quiet=True, port=2020)
