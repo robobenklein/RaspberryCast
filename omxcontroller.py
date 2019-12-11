@@ -59,6 +59,10 @@ class PlaybackController(object):
         log.info("OMXPlayer exit: {}".format(
             exit_status
         ))
+        self.player = None
+        if exit_status == 0:
+            self.current_playbackitem = None
+            self._new_player()
 
     def _new_player(self):
         """Creates a new player by popping from queue."""
@@ -73,7 +77,7 @@ class PlaybackController(object):
         log.info("Creating player for video: {}".format(self.current_playbackitem))
         self.player = OMXPlayer(self.current_playbackitem.get_direct_url())
         self.player.set_volume(self.volume)
-        self.player.exitEvent.subscribe(self._on_omxplayer_exit)
+        self.player.exitEvent.subscribe(logger.info)
 
     def add_single_url(self, url):
         n_item = PlaybackItem(url)
