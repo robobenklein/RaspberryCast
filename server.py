@@ -190,7 +190,7 @@ def shutdown():
     else:
         try:
             time = int(time)
-            if (time < 400 and time >= 0):
+            if (time < 2880 and time >= 0):
                 shutdown_command = "shutdown -h +" + str(time) + " &"
                 os.system(shutdown_command)
                 logger.info("Shutdown should be successfully programmed")
@@ -203,7 +203,7 @@ def shutdown():
 @app.route('/running')
 def webstate():
     currentState = getState()
-    logger.debug("Running state as been asked : "+currentState)
+    logger.debug("Running state as been asked : " + currentState)
     return currentState
 
 logger.info("Pre-run main file loaded.")

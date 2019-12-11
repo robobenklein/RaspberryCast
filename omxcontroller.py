@@ -155,5 +155,10 @@ class PlaybackController(object):
             self.player = None
             return "Stopped"
 
+    def next_video(self):
+        self.stop()
+        self.current_playbackitem = None
+        self._new_player()
+
     def shutdown(self):
         self.stop()
