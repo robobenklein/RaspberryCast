@@ -37,8 +37,7 @@ def return_direct_media_url(url):
         video = result  # Just a video
 
     if "youtu" in url:
-        logger.debug('''CASTING: Youtube link detected.
-Extracting url in maximal quality.''')
+        logger.debug('''CASTING: Youtube link detected. Extracting url in maximal quality.''')
         for fid in ('22', '18', '36', '17'):
             for i in video['formats']:
                 if i['format_id'] == fid:
