@@ -4,8 +4,8 @@ import os
 import threading
 import logging
 import json
-logger = logging.getLogger("RubusCast")
-
+log = logging.getLogger("RubusCast")
+logger = log
 
 def return_direct_media_url(url):
     """Get the raw media url from a web url."""
