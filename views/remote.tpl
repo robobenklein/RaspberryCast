@@ -52,7 +52,7 @@
 					</button>
 				</div>
 				<br>
-				<a type="button" class="btn btn-info" id="link-text" onClick="advanced()">More ▾</a>
+				<button type="button" class="fifty btn btn-info" id="link-text" onClick="advanced()">More ▾</button>
 				<div id="advanced" style="display:none">
 					<form id="shut_form" class="form-inline">
 						<div class="form-group">
