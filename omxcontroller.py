@@ -100,7 +100,10 @@ class PlaybackController(object):
                 logger.info("queuing video")
                 if i != result['entries'][0]:
                     try:
-                        self.add_single_url(i['url'])
+                        if "://" not in i['url']:
+                            self.add_single_url("https://youtube.com/?v="+i['url'])
+                        else:
+                            self.add_single_url(i['url'])
                     except Exception as e:
                         log.error("Could not enqueue " + i['url'])
                         log.error(e)
