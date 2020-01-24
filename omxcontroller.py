@@ -99,7 +99,11 @@ class PlaybackController(object):
             for i in result['entries']:
                 logger.info("queuing video")
                 if i != result['entries'][0]:
-                    self.add_single_url(i['url'])
+                    try:
+                        self.add_single_url(i['url'])
+                    except Exception as e:
+                        log.error("Could not enqueue " + i['url'])
+                        log.error(e)
 
     def play(self):
         if self.get_status() == "Playing":
