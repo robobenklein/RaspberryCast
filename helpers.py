@@ -49,4 +49,8 @@ Extracting url in maximal quality.''')
                     return i['url'], result
     else:
         logger.debug('''Video not from Youtube, extracting url in maximal quality.''')
-        return video['url'], result
+        try:
+            return video['url'], result
+        except KeyError as e:
+            log.warn("Error returning video URL:")
+            log.warn(e)
