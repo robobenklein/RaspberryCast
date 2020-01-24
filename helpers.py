@@ -52,6 +52,7 @@ Extracting url in maximal quality.''')
         try:
             return video['url'], result
         except KeyError as e:
-            log.warn("Error returning video URL:")
-            log.warn(e)
+            log.warning("Error returning video URL:")
+            log.warning(e)
+            log.warning(video)
             raise e
