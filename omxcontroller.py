@@ -125,7 +125,10 @@ class PlaybackController(object):
     def playpause(self):
         if self.player is None:
             log.error("No player running.")
-        self.player.play_pause()
+            if len(self.queue) > 0:
+                self.play()
+        else:
+            self.player.play_pause()
 
     def pause(self):
         if self.get_status() == "Paused":
