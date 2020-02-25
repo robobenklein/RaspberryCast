@@ -202,7 +202,7 @@ def shutdown():
 
 @app.route('/running')
 def webstate():
-    currentState = getState()
+    currentState = controller.get_status()
     logger.debug("Running state as been asked : " + currentState)
     return currentState
 
