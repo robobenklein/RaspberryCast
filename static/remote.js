@@ -80,7 +80,7 @@ $(function() {
       var url = $("#media_url").val();
       var url_encoded_url = encodeURIComponent(url);
       addToHistory(url);
-      mkrequest("/stream?url=" + url_encoded_url, 1);
+      mkrequest("/play?url=" + url_encoded_url, 1);
     } else {
       message("You must enter a link !", 2)
     }
@@ -90,7 +90,7 @@ $(function() {
     if ($("#media_url").val() !== "") {
       var url = $("#media_url").val();
       var url_encoded_url = encodeURIComponent(url);
-      mkrequest("/queue?url=" + url_encoded_url, 2)
+      mkrequest("/enqueue?url=" + url_encoded_url, 2)
     } else {
       message("You must enter a link !", 2)
     }

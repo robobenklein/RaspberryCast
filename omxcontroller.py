@@ -53,7 +53,19 @@ class PlaybackController(object):
         self.player = None
         self.queue = []
         self.current_playbackitem = None
-        self.volume = 1.0
+        self.volume = 0.6
+
+    def __str__(self):
+        if self.current_playbackitem:
+            return f"{self.get_status()} {self.current_playbackitem.get_title()}. {len(self.queue)} items in queue."
+        else:
+            return f"{self.get_status()}. {len(self.queue)} items in queue."
+
+    def get_title(self):
+        if self.current_playbackitem:
+            return self.current_playbackitem.get_title()
+        else:
+            return "Not playing anything."
 
     def _on_omxplayer_exit(self, player, exit_status):
         log.info("OMXPlayer exit: {}".format(

@@ -70,7 +70,7 @@ def remote():
     return template('remote')
 
 
-@app.route('/stream')
+@app.route('/play')
 def stream():
     url = request.query['url']
     logger.debug('Received URL to cast: '+ url)
@@ -90,7 +90,7 @@ def stream():
         return "0"
 
 
-@app.route('/queue')
+@app.route('/enqueue')
 def queue():
     url = request.query['url']
 
@@ -161,9 +161,15 @@ def video():
 def video():
     control = request.query['attr']
     if control == "title":
-        return controller.current_playbackitem.get_title()
+        return controller.get_title()
     elif control == "volume":
         return controller.get_volume()
+    elif control == "status":
+        return controller.get_status()
+    elif control == "statustext":
+        return str(controller)
+    else:
+        return "invalid attr"
 
 @app.route('/sound')
 def sound():
@@ -205,6 +211,7 @@ def webstate():
     currentState = controller.get_status()
     logger.debug("Running state as been asked : " + currentState)
     return currentState
+
 
 logger.info("Pre-run main file loaded.")
 run(app, reloader=False, host='0.0.0.0', debug=True, quiet=True, port=2020)
