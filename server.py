@@ -103,7 +103,7 @@ def queue():
                 controller.playlist(url)
             else:
                 controller.add_single_url(url)
-            return "2"
+            return "1"
         else:
             logger.info('No video currently playing, playing url : '+url)
             if (("youtu" in url and "list=" in url) or
