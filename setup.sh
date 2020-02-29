@@ -76,8 +76,6 @@ chmod +s /sbin/shutdown
 #Adding right to sudo fbi without password
 echo "$USER ALL = (root) NOPASSWD: /usr/bin/fbi" >> /etc/sudoers
 
-rm setup.sh
-
 echo "============================================================"
 echo "Setup was successful."
 echo "Do not delete the 'RaspberryCast' folder as it contains all application data!"
