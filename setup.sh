@@ -21,7 +21,6 @@ if ! getent passwd $USER > /dev/null 2>&1; then
     exit
 fi
 
-echo "Your system will be rebooted on completion"
 echo "Do you wish to continue? (y/n)"
 
 while true; do
@@ -38,8 +37,8 @@ echo ""
 echo "Installing necessary dependencies... (This could take a while)"
 echo ""
 echo "============================================================"
-
-apt-get install -y lsof python-pip git wget omxplayer libnss-mdns fbi
+apt-get update
+apt-get install -y lsof python3-pip git wget omxplayer libnss-mdns fbi
 echo "============================================================"
 
 if [ "$?" = "1" ]
@@ -48,23 +47,13 @@ then
   exit 0
 fi
 
-pip install youtube-dl bottle livestreamer
+pip3 install youtube-dl bottle livestreamer
 
 if [ "$?" = "1" ]
 then
   echo "An unexpected error occured during pip install!"
   exit 0
 fi
-
-echo ""
-echo "============================================================"
-echo ""
-echo "Cloning project from GitHub.."
-echo ""
-echo "============================================================"
-
-su - $USER -c "git clone https://github.com/vincelwt/RaspberryCast.git"
-chmod +x ./RaspberryCast/RaspberryCast.sh
 
 echo ""
 echo "============================================================"
@@ -92,12 +81,9 @@ rm setup.sh
 echo "============================================================"
 echo "Setup was successful."
 echo "Do not delete the 'RaspberryCast' folder as it contains all application data!"
-echo "Rebooting system now..."
+echo "Please reboot the system now!"
 echo "============================================================"
 
 sleep 2
-
-#Reboot to ensure cleaness of Pi memory and displaying of log
-reboot
 
 exit 0
