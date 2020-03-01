@@ -18,7 +18,7 @@ if [ $1 = "start" ]; then
   git pull
   sudo fbi -T 1 --noverbose -a images/starting.jpg
   echo "Starting RaspberryCast server."
-  python3 server.py &
+  ./server.py &
   echo "Done."
   exit
 elif [ $1 = "stop" ] ; then
