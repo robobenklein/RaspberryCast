@@ -79,7 +79,7 @@ def stream():
         if (
                 ("youtu" in url and "list=" in url) or
                 ("soundcloud" in url and "/sets/" in url)):
-            comtroller.playlist(url, True, config)
+            controller.playlist(url, True, config)
         else:
             controller.add_single_url(url)
         if controller.get_status() == "Stopped":
